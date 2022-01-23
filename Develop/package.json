@@ -1,0 +1,14 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "homework 18",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Calvin Swomley",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^6.1.7"
+  }
+}
