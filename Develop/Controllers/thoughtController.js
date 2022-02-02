@@ -3,8 +3,8 @@ const { Thought, User } = require('../models');
 module.exports = {
     //get all thoughts
     getThoughts(req, res){
-        Thoughts.find()
-            .then((thoughts) => res.json(thoughts))
+        Thought.find()
+            .then(async (thoughts) => res.json(thoughts))
             .catch((err) => res.status(500).json(err));
     },
     //get single thoughts
@@ -38,7 +38,7 @@ module.exports = {
           )
             .then((course) =>
               !course
-                ? res.status(404).json({ message: 'No course with this id!' })
+                ? res.status(404).json({ message: 'No thought with this id!' })
                 : res.json(course)
             )
             .catch((err) => res.status(500).json(err));
@@ -51,7 +51,7 @@ module.exports = {
                     ? res.status(404).json({ message: 'No thought with that ID' })
                     : Thought.deleteMany({ _id: { $in: thought.reactions } })
         )
-        .then(() => res.json({ message: 'Course and students deleted!' }))
+        .then(() => res.json({ message: 'Thought deleted!' }))
         .catch((err) => res.status(500).json(err));
     },
     //creation reaction

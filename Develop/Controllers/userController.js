@@ -3,13 +3,15 @@ const { User, Thought } = require('../models');
 module.exports = {
     //get all users
     getUsers(req, res){
-        Thought.find().then((thoughts) => res.json(thoughts))
-            .catch((err) => res.status(500).json(err));
+        User.find()
+                .then(async (users) => res.json(users))         
+                .catch((err) => res.status(500).json(err));
     },
     //get single user
     getSingleUser(req, res){
         User.findOne({ _id: req.params.userId }).select('-__v')
-            .then((user) =>
+            .lean()
+            .then(async (user) =>
             !user
                 ? res.status(404).json({ message: 'No user with that ID' })
                 : res.json(user)
@@ -31,7 +33,7 @@ module.exports = {
             { $set: req.body },
             { runValidators: true, new: true }
           )
-            .then((user) =>
+            .then(async (user) =>
               !user
                 ? res.status(404).json({ message: 'No user with this id!' })
                 : res.json(user)
@@ -39,8 +41,8 @@ module.exports = {
             .catch((err) => res.status(500).json(err));
     },
     deleteUserById(req, res){
-        User.findOneAndDelete({ _id: req.params.courseId })
-            .then((course) =>
+        User.findOneAndRemove({ _id: req.params.userId })
+            .then((user) =>
                 !user
                     ? res.status(404).json({ message: 'No user with that ID' })
                     : Thought.deleteMany({ _id: { $in: user.thoughts } })
@@ -51,7 +53,7 @@ module.exports = {
     addNewFriend(req, res){
         console.log('You are adding a friend.');
         console.log(req.body);
-        Student.findOneAndUpdate(
+        User.findOneAndUpdate(
             { _id: req.params.userId },
             { $addToSet: { friends: req.body } },
             { runValidators: true, new: true }

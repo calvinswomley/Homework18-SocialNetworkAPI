@@ -1,52 +1,34 @@
 const connection = require('../config/connection');
-const { Course, Student } = require('../models');
-const { getRandomUser, getRandomReactions } = require('./data');
+const { User, Thought } = require('../models');
+const { getRandomThought, getRandomUserName } = require('./data');
 
 connection.on('error', (err) => err);
 
+// Creates a connection to mongodb
 connection.once('open', async () => {
   console.log('connected');
-
-  // Drop existing thoughts
-  await Thought.deleteMany({});
-
-  // Drop existing users
+  
+  // Delete the entries in the collection
   await User.deleteMany({});
+  await Thought.deleteMany({});
+  // Empty arrays for randomly generated users
+  const users = [];
 
-  // Create empty array to hold the thoughts
-  const thoughts = [];
-
-  // Get some random assignment objects using a helper function that we imported from ./data
-  const reactions = getRandomReactions(20);
-
-  // Loop 20 times -- add thoughts to the thoughts array
-  for (let i = 0; i < 20; i++) {
-    const username = getRandomUser();
-    const email = fullName.split(' ')[0];
-    const last = fullName.split(' ')[1];
-    const github = `${first}${Math.floor(Math.random() * (99 - 18 + 1) + 18)}`;
-
-    students.push({
-      first,
-      last,
-      github,
-      assignments,
-    });
+  for (let i = 0; i < 10; i++) {
+    const name = getRandomUserName();
+    const thought = getRandomThought();
+    const newUser = {
+      username: name,
+      email: `${name}@mail.com`,
+      thoughts: thought,
+    };
+    users.push(newUser);
   }
 
-  // Add students to the collection and await the results
-  await Student.collection.insertMany(students);
+  // Wait for the users to be inserted into the database
+  await User.collection.insertMany(users);
 
-  // Add courses to the collection and await the results
-  await Course.collection.insertOne({
-    courseName: 'UCLA',
-    inPerson: false,
-    students: [...students],
-  });
-
-  // Log out the seed data to indicate what should appear in the database
-  console.table(students);
-  console.table(assignments);
-  console.info('Seeding complete! 🌱');
+  console.table(users);
+  console.timeEnd('seeding complete 🌱');
   process.exit(0);
 });
