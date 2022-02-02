@@ -63,29 +63,30 @@ module.exports = {
             { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true }
         )
-        .then((thought) =>
-            !thought
+            .then((thought) =>
+                !thought
                 ? res
                     .status(404)
                     .json({ message: 'No thought found with that ID.' })
                 : res.json(thought)
         )
-        .catch((err) => res.status(500).json(err));
+            .catch((err) => res.status(500).json(err));
     },
     //delete reaction
     deleteReaction(req, res){
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { reaction: { reactionId: req.params.reactionId } } },
+            { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { runValidators: true, new: true }
           )
-            .then((thought) =>
+            .then( async (thought) =>
               !thought
                 ? res
                     .status(404)
                     .json({ message: 'No thought found with that ID.' })
-                : res.json(thought)
-            )
-            .catch((err) => res.status(500).json(err));
-    },
+                : Thought.deleteMany({ _id: { $in: thought.reactions } })
+                )
+                            .then(() => res.json({ message: 'Reaction deleted!' }))
+                            .catch((err) => res.status(500).json(err));
+            },
 };

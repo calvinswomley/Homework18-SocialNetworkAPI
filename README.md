@@ -22,3 +22,4 @@ Homework 18: Social Network API
 ## Github Link
     https://github.com/calvinswomley/Homework18-SocialNetworkAPI
 ## Walkthrough Video Link
+    https://watch.screencastify.com/v/r4jHgcvvrlfeWeTV1J9i
